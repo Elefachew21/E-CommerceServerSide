@@ -1,0 +1,16 @@
+import { Router } from "express";
+import { createOrder } from "../controllers/orderController.js";
+import {authMiddleware} from "../middleware/authMiddleware.js";
+import { authorizeRoles } from "../middleware/roleValidation.js";
+import { confirmPayment } from "../controllers/orderController.js";
+import { ROLES } from "../config/constants.js";
+import { shippingOrder } from "../controllers/orderController.js";
+import { completionOrder } from "../controllers/orderController.js";
+import { cancelOrder } from "../controllers/orderController.js";
+const router = Router();
+router.post("/create", authMiddleware, authorizeRoles(ROLES.BUYER), createOrder);
+router.patch("/confirm-payment/:id", authMiddleware, authorizeRoles(ROLES.ADMIN), confirmPayment);
+router.patch("/shipping/:id", authMiddleware, authorizeRoles(ROLES.ADMIN, ROLES.SELLER), shippingOrder);
+router.patch("/complete/:id", authMiddleware, authorizeRoles(ROLES.ADMIN, ROLES.SELLER), completionOrder);
+router.patch("/cancel/:id", authMiddleware, authorizeRoles(ROLES.ADMIN, ROLES.SELLER), cancelOrder);
+export default router;  
