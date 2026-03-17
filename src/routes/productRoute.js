@@ -8,10 +8,11 @@ import {
     , validateRequest
 } from "../middleware/inputValidationMiddleware.js";
 import upload from "../middleware/upload.js";
+import { publicLimiter } from "../middleware/rateLimiter.js";
 
 const router = Router();
 router.post("/create", authMiddleware, authorizeRoles(ROLES.SELLER, ROLES.ADMIN),validateRequest(createProductSchema),upload.array("images",5), createProduct);
-router.get("/getAllProduct", getAllProduct);
+router.get("/getAllProduct",publicLimiter, getAllProduct);
 router.put("/update/:id", authMiddleware, authorizeRoles(ROLES.SELLER, ROLES.ADMIN), updateProduct);
-router.delete("/delete/:id", authMiddleware, authorizeRoles(ROLES.ADMIN), deleteProduct);
+router.delete("/delete/:id", authMiddleware, authorizeRoles(ROLES.ADMIN),publicLimiter, deleteProduct);
 export default router;

@@ -7,6 +7,7 @@ import orderRoute from "./src/routes/orderRoute.js";
 import cartRoute from "./src/routes/cartRoute.js"
 import profileRoute from "./src/routes/profileRoute.js"
 import userManagementRoute from "./src/routes/userManagementRoute.js"
+import analyticalRoute from "./src/routes/analyticalRoute.js"
 const app = express(); // create an express application
 
 app.use(express.json()); // middleware to parse JSON request bodies
@@ -23,5 +24,6 @@ app.use("/api/orders", orderRoute);// use the order routes for /api/orders endpo
 app.use("/api/carts", cartRoute);
 
 app.use("/api/profile", profileRoute);
-app.use("/api/manageUser",userManagementRoute)
+app.use("/api/manageUser", userManagementRoute)
+app.use("/api/analytics",analyticalRoute)
 export default app;
