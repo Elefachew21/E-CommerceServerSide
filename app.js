@@ -8,10 +8,13 @@ import cartRoute from "./src/routes/cartRoute.js"
 import profileRoute from "./src/routes/profileRoute.js"
 import userManagementRoute from "./src/routes/userManagementRoute.js"
 import analyticalRoute from "./src/routes/analyticalRoute.js"
+import { requestLogger } from "./src/middleware/logger.js";
+
 const app = express(); // create an express application
 
+app.use(requestLogger);
 app.use(express.json()); // middleware to parse JSON request bodies
-app.use(morgan("dev")); // middleware for logging HTTP requests in development mode
+//app.use(morgan("dev")); // middleware for logging HTTP requests in development mode
 // user API base Routes
 app.use("/api/auth", authRoute);// use the auth routes for /api/auth endpoints
 // Product API base Routes

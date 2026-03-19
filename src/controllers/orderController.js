@@ -1,6 +1,8 @@
 import Product from "../models/products.js";
 import Order from "../models/orders.js";
 import mongoose from "mongoose";
+import { createAuditLog } from "../utils/auditHelper.js";
+import { logInfo } from "../utils/loggerHelper.js";
 
 const createOrder = async (req, res) => {
   try {
@@ -67,6 +69,17 @@ const createOrder = async (req, res) => {
       paymentMethod,
       totalPrice: totalPriceCalculated,
     });
+  // AUDIT LOG HERE
+   await createAuditLog({
+  userId: req.user._id,
+  action: "CREATE_ORDER",
+  target: "ORDER",
+  targetId: order._id,
+  metadata: {
+    createdAt: order.createdAt,
+    role: req.user.role
+  }
+});
 
     res.status(201).json({
       success: true,
@@ -107,7 +120,7 @@ const confirmPayment = async (req, res) => {
     order.orderStatus = "processing";
 
     await order.save();
-
+ 
     res.status(200).json({
       message: "Payment confirmed",
       order,
@@ -211,6 +224,19 @@ const cancelOrder = async (req, res) => {
     // update order status to cancelled
     order.orderStatus = "cancelled";
     await order.save();
+    logInfo("Order cancelled Successfully");
+    // AUDIT LOG HERE
+   await createAuditLog({
+  userId: req.user._id,
+  action: "CANCEL_ORDER",
+  target: "ORDER",
+  targetId: order._id,
+  metadata: {
+    createdAt: order.createdAt,
+    role: req.user.role
+  }
+});
+
     res.status(200).json({
       message: "Order cancelled successfully",
       order,
